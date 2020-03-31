@@ -60,3 +60,21 @@ func main() {
 //
 // io.Closer Interface has...
 // - Close() (error)
+//
+// Notes:
+// 1. Firstly, why was a interface used as the type inside of a struct?
+//    Basically, if we specify a interface as a value inside of a struct, we're saying that the body field right here can have any value assigned to it, so long as it fulfills this interface.
+//    So this is kind of like a free lease on us, to provide us a little bit of flexibility. It's like saying you can put any type in here as long as it satisfies the ReadCloser interface.
+//    Thus, in this case, all we really have to do is look at that ReadCloser interface, drill through the documentation and then eventually come to find that we need to define a function
+//    called Read and one called Close.
+//    - So if we sat down and made some type of struct that had a function called Read and one called Close that obeyed all these other types in here we could then freely make a response
+//      struct and assign that type to this body field. That's why we are seeing an interface in the place of an actual type inside of a struct.
+//
+// 2. Next, why we saw the kind of funny syntax around the ReadCloser?
+//    So specifically we were talking about interfaces just a little bit ago and we were a little bit more used to seeing syntax that we list out a function name the set of parentheses and
+//    then the return type. However, it's clearly not the case here.
+//    - Well, in Go, we can take multiple interfaces so different interfaces and assemble them together to form another interface. I.e. both Reader and Closer are interfaces.
+//      The ReadCloser interface says if you want to fulfill to satisfy the requirements of this interface, you have to satisfy the requirements of both the Reader and Closer interfaces.
+//      So all we're really doing here is defining a new interface by putting together pieces of other ones inside of our application so we can freely embed one interface into another
+//      as much as we please, as long as it actually serves the purpose of building our application. So in reality, what really matters to us is what the Reader interface and Closer interface
+//      are requiring of us.
