@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 )
@@ -13,9 +14,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	bs := make([]byte, 99999) // using a different syntax from []byte{}. Check notes' point 5
-	resp.Body.Read(bs)        // in reality we don't actually always make some bite slice like this and pass it off to the read function whenever we want to read data out of response
-	fmt.Println(string(bs))
+	// bs := make([]byte, 99999) // using a different syntax from []byte{}. Check notes' point 5
+	// resp.Body.Read(bs)        // in reality we don't actually always make some bite slice like this and pass it off to the read function whenever we want to read data out of response
+	// fmt.Println(string(bs))
+
+	io.Copy(os.Stdout, resp.Body)
 }
 
 // In the next section, we're going to start really digging into the documentation around this resp object right here and figure out how we can
@@ -143,3 +146,17 @@ func main() {
 // 5. There we're making a slice of type byte and make sure that there are 99999 elements available inside of it
 //    Yes, a bite slice can grow and shrink, but the read function is not set up to automatically resize the slice, if the slices are already full
 //    So instead we take this approach of just making an arbitrarily large bite slice that's basically big enough for all this data to fit into
+//
+// 6. Source of data -> Reader -> []byte (Output data that anyone can work with)
+//    []byte -> Writer -> Some form of output
+//
+//    We can kind of think of this writer interface as doing something like this. We take our bite slice we pass it to some value that implements the writer interface. The writer interface
+//    is essentially describing something that can take some info inside of our program and send it outside of our program
+//
+//    []byte -> Writer -> Source of output
+//                        - Outgoing HTTP Request
+//                        - Text file on hard drive
+//                        - Image file on hard drive
+//                        - Terminal
+//
+//    So we need to find something in the standard library that implements the Writer interface, and use that to log out all the data that we're receiving from the Reader
