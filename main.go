@@ -159,4 +159,21 @@ func main() {
 //                        - Image file on hard drive
 //                        - Terminal
 //
-//    So we need to find something in the standard library that implements the Writer interface, and use that to log out all the data that we're receiving from the Reader
+//    So we need to find something in the standard library that implements the Writer interface, and use that to log out all the data that we're receiving from the Reader!
+//
+// 7. In relation to the conclusion of point 6
+//    https://golang.org/pkg/io/#Writer
+//    https://golang.org/pkg/io/#Copy
+//
+//									(First Argument)                                         (Second Argument)
+//    io.Copy        Something that implements the writer interface           Something that implements the Reader interface
+//                                          V                                                         V
+//                                      os.Stdout                                                  resp.Body
+//                                          V
+//                                 value of type File
+//                                          V
+//                         File has a function called 'Write'
+//                                          V
+//                    Therefore, it implements the Writer interface
+//
+// That's why we can pass os.Stdout to io.Copy
