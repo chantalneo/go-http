@@ -13,7 +13,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Response:", resp) // Taking a naive common sense approach (that isn't actually right) to log out the response for now
+	bs := make([]byte, 99999) // using a different syntax from []byte{}. Check notes' point 5
+	resp.Body.Read(bs)        // in reality we don't actually always make some bite slice like this and pass it off to the read function whenever we want to read data out of response
+	fmt.Println(string(bs))
 }
 
 // In the next section, we're going to start really digging into the documentation around this resp object right here and figure out how we can
@@ -137,3 +139,7 @@ func main() {
 // - The int is referring to the number of bytes that was read into that slice, which we can use for error checking or a little bit of something that says hey here's
 // how much data we just shoved into the slice
 // - The err is basically an error object that says okay well hey you know here's maybe something went wrong something didn't go quite right
+//
+// 5. There we're making a slice of type byte and make sure that there are 99999 elements available inside of it
+//    Yes, a bite slice can grow and shrink, but the read function is not set up to automatically resize the slice, if the slices are already full
+//    So instead we take this approach of just making an arbitrarily large bite slice that's basically big enough for all this data to fit into
