@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+type logWriter struct{}
+
 func main() {
 	resp, err := http.Get("http://google.com")
 	if err != nil {
@@ -18,7 +20,15 @@ func main() {
 	// resp.Body.Read(bs)        // in reality we don't actually always make some bite slice like this and pass it off to the read function whenever we want to read data out of response
 	// fmt.Println(string(bs))
 
-	io.Copy(os.Stdout, resp.Body)
+	lw := logWriter{}
+
+	io.Copy(lw, resp.Body)
+}
+
+func (logWriter) Write(bs []byte) (int, error) {
+	fmt.Println(string(bs))
+	fmt.Println("Just wrote this many bytes", len(bs))
+	return len(bs), nil
 }
 
 // In the next section, we're going to start really digging into the documentation around this resp object right here and figure out how we can
