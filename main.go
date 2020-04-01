@@ -78,3 +78,22 @@ func main() {
 //      So all we're really doing here is defining a new interface by putting together pieces of other ones inside of our application so we can freely embed one interface into another
 //      as much as we please, as long as it actually serves the purpose of building our application. So in reality, what really matters to us is what the Reader interface and Closer interface
 //      are requiring of us.
+//
+// 3. Instructor threw a possibility (just a possibility, though neither is this how the world works nor how Go is written):
+//    Source of Input                              | Returns?!? | To Print It... (Imagining a world without interfaces)
+//    HTTP Request Body                            | []flargen  | func printHTTP([]flargen)
+//    Text file on hard drive                      | []string   | func printFile([]string)
+//    Image file on hard drive                     | jpegne     | func printImage(jpegne)
+//    User entering text into command line         | []byte     | func printText([]byte)
+//    Data from analog sensor plugged into machine | []float    | func printData([]float)
+//
+//    The solution to all this stuff is a Reader interface
+//    No matter what the source of input is, we're going to see this reader interface all over the place
+//    Now the purpose of the reader interface is to say hey we understand that there is a lot of different sources of data coming into your program,
+//    but for each of these different sources if they implement the Reader interface then we get some very common interface or some common point of contact that we can
+//    use to take that input and then pipe it off to different places inside of our codebase, without writing a bunch of custom functions to work with each of these individual return types
+//    TL;DR
+//    Reader interface can be considered as being literally an interface or an adapter to take these radically different sources of input and translate them into some common medium,
+//    that all these other functions that we might have can easily work with
+//
+//    The Reader expects us to spit out a byte slice from the different sources, so that it becomes an output data that anyone can work with
