@@ -97,3 +97,43 @@ func main() {
 //    that all these other functions that we might have can easily work with
 //
 //    The Reader expects us to spit out a byte slice from the different sources, so that it becomes an output data that anyone can work with
+//
+//    A more realistic version would be:
+//    Source of Input
+//    HTTP Request Body                             [implements Reader] ----------\
+//    Text file on hard drive                       [implements Reader] -----------\
+//    Image file on hard drive                      [implements Reader] ------------>------------ []byte, the output data that anyone can work with
+//    User entering text into command line          [implements Reader] -----------/
+//    Data from analog sensor plugged into machine  [implements Reader] ----------/
+//
+// 4. What does the Read function do?
+//    The entire point of all this interface stuff is to say that the request body has already taken care of this work for us...
+//
+//    Things that wants
+//    to read the body
+//    (something that
+//    wants to see the
+//    Reader interface)               Thing that implements Reader
+//                                    Read([]byte) (int, err)
+//    Byte Slice ----------------->           Byte Slice
+//                                                /|\
+//                                                 |
+//                                       Raw body of response
+//                         (the function takes the data from the raw body of
+//                        response and injects/pushes it into that byte slice)
+//
+// Remember all that discussion around pointer, if we pass a slice off to a function, that function can freely modify the slice, and then the original slice
+// back in our code world (before we pass it off to the function), which is the original slice gets modified. So that's what's really going on behind the scenes
+// and that kind of explains the Read function signature right there.
+//    Instructor: so even though we are passing in this byte size and I don't know about you, but if I was going to read for something in like a classic programming language,
+//    I would expect to call Read and then be returned a byte slice, you know something that says hey we just read from the data source. Here is a bite slice that's coming back
+//    that's full of all the data you want to care or you actually care about. But with this function right here the signature is just a little bit different to kind of work with
+//    that whole concept of pointers and whatnot we spoke about earlier
+//
+// Putting myself in the equation, I want to read data out of the request body. So if I'm going to make direct access to this Read function, then I'd create a byte slice
+// So that I pass it to the thing that is implementing the reader which for our application is the request body, i.e. the request body is implementing the Reader interface
+//
+// A little about the about two return arguments on this thing are the two return values:
+// - The int is referring to the number of bytes that was read into that slice, which we can use for error checking or a little bit of something that says hey here's
+// how much data we just shoved into the slice
+// - The err is basically an error object that says okay well hey you know here's maybe something went wrong something didn't go quite right
